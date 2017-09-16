@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.112.0",
+    "dotenv-webpack": "^1.5.4",
     "lodash": "^4.17.4",
     "vue": "^2.3.3"
   },

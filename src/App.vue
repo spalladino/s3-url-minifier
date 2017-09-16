@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Minifier v-if="loggedIn" :credentials="credentials" />
+    <Minifier v-if="loggedIn" :credentials="credentials" :bucket="bucket" />
     <Login v-else :on-login="handleLogin" />
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
   data: function() {
     return {
       loggedIn: false,
-      credentials: null
+      credentials: null,
+      bucket: process.env.S3_BUCKET
     }
   },
   methods: {

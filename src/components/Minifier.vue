@@ -20,6 +20,10 @@ export default {
     credentials: {
       type: Object,
       required: true
+    },
+    bucket: {
+      type: String,
+      required: true
     }
   },
   data () {
@@ -43,10 +47,12 @@ export default {
 
       const target = this.url;
       const short = this.short;
+      const bucket = this.bucket;
+
       this.s3().putObject({
         ACL: 'public-read',
         Body: "",
-        Bucket: "zpl.in",
+        Bucket: bucket,
         Key: short,
         ContentLength: 0,
         WebsiteRedirectLocation: target
@@ -55,7 +61,7 @@ export default {
         if (err) {
           this.error = `Error creating redirect: ${err}`;
         } else {
-          this.notice = `Created zpl.in/${short} to ${target}`;
+          this.notice = `Created ${bucket}/${short} to ${target}`;
           this.url = null;
           this.short = null;
         }
