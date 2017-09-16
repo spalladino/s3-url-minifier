@@ -1,6 +1,6 @@
 # minifier
 
-> Home made URL minifier
+Home made URL minifier based on AWS S3, built from the `webpack-simple` [Vue](https://vuejs.org/) template.
 
 ## Build Setup
 
