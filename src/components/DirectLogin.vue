@@ -38,7 +38,7 @@ export default {
       const s3 = new AWS.S3(config);
 
       // Get index to test credentials
-      s3.getObject({Bucket: 'zpl.in', Key: 'index.html'}, (err, data) => {
+      s3.getObject({Bucket: process.env.AWS_S3_BUCKET, Key: 'index.html'}, (err, data) => {
         if (err) {
           this.error = "Invalid credentials";
           this.loggingIn = false;

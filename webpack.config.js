@@ -40,6 +40,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    gapi: 'gapi'
+  },
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js'

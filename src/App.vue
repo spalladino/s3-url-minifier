@@ -1,25 +1,31 @@
 <template>
   <div id="app">
-    <Minifier v-if="loggedIn" :credentials="credentials" :bucket="bucket" />
+    <div v-if="loggedIn">
+      <Minifier :credentials="credentials" :bucket="bucket" />
+      <hr />
+      <Listing :credentials="credentials" :bucket="bucket" />
+    </div>
     <Login v-else :on-login="handleLogin" />
   </div>
 </template>
 
 <script>
-import Login from './components/Login.vue';
+import Login from './components/GoogleLogin.vue';
 import Minifier from './components/Minifier.vue';
+import Listing from './components/Listing.vue';
 
 export default {
   name: 'app',
   components: {
     Login,
-    Minifier
+    Minifier,
+    Listing
   },
   data: function() {
     return {
       loggedIn: false,
       credentials: null,
-      bucket: process.env.S3_BUCKET
+      bucket: process.env.AWS_S3_BUCKET
     }
   },
   methods: {

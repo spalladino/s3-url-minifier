@@ -2,7 +2,7 @@
   <div>
     <h1>Create a minified URL</h1>
     <form v-on:submit.prevent="createRedirect">
-      <input type="text" :disabled="creating" v-model.trim="short" placeholder="Shortlink" />
+      <input type="text" :disabled="creating" v-model.trim="short" placeholder="Shortlink" v-on:input="checkShortlink" />
       <input type="text" :disabled="creating" v-model.trim="url" placeholder="Target URL" />
       <button type="submit" :disabled="creating">{{ creating ? "Creating..." : "Create" }}</button>
       <p>{{ error }}</p>
@@ -13,6 +13,7 @@
 
 <script>
 import AWS from 'aws-sdk';
+import _ from 'lodash';
 
 export default {
   name: 'minifier',
@@ -35,24 +36,31 @@ export default {
       creating: false
     }
   },
+  created: function() {
+    this.s3 = new AWS.S3({credentials: this.credentials, region: 'us-east-1'});
+  },
   methods: {
-    s3: function() {
-      const config = new AWS.Config({ credentials: this.credentials, region: 'us-east-1' });
-      const s3 = new AWS.S3(config);
-      return s3;
-    },
+    checkShortlink: _.debounce(function() {
+      const short = this.short;
+      this.s3.getObject({Bucket: this.bucket, Key: short}, (err, data) => {
+        if (!err && short == this.short) {
+          this.notice = `Shortlink ${short} already exists to ${data.WebsiteRedirectLocation}`
+        } else {
+          this.notice = null;
+        }
+      })
+    }, 1000),
     createRedirect: function() {
       this.creating = true;
       this.notice = null;
 
       const target = this.url;
       const short = this.short;
-      const bucket = this.bucket;
 
-      this.s3().putObject({
+      this.s3.putObject({
         ACL: 'public-read',
         Body: "",
-        Bucket: bucket,
+        Bucket: this.bucket,
         Key: short,
         ContentLength: 0,
         WebsiteRedirectLocation: target
@@ -61,7 +69,7 @@ export default {
         if (err) {
           this.error = `Error creating redirect: ${err}`;
         } else {
-          this.notice = `Created ${bucket}/${short} to ${target}`;
+          this.notice = `Created ${this.bucket}/${short} to ${target}`;
           this.url = null;
           this.short = null;
         }
